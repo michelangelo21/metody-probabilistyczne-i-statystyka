@@ -4,6 +4,7 @@ using StatsPlots
 import Random
 Random.Xoshiro()
 Random.seed!(42)
+plotlyjs()
 
 function approximate_integral(foo::Function, a::Number, b::Number, n::Int, M::Number)
     x = rand(Uniform(a, b), n)
@@ -24,7 +25,6 @@ foo(x) = sin(x)
 foo(x) = 4 * x * (1 - x)^3
 
 
-n = 50
 a = 0
 b = 8
 # M = 10 * maximum(foo(x) for x in a:0.001:b)
@@ -36,7 +36,19 @@ ns = 50:50:5000
 integrals(n) = [approximate_integral(foo, a, b, n, M) for i in 1:k]
 results = [integrals(n) for n in ns]
 
-scatter(collect(Iterators.flatten(ones(k) * ns')), collect(Iterators.flatten(results)), label="asdf")
-
-dotplot(ns, results, marker=(2, :blue, stroke(0)), label="")
+scatter(collect(Iterators.flatten(ones(k) * ns')),
+    collect(Iterators.flatten(results)),
+    marker=(2, :blue, stroke(0)),
+    label="single repetitions"
+)
 scatter!(ns, mean.(results), marker=(:red, stroke(0)), label="mean")
+hline!([12], color=:green, label="true value")
+xlabel!("n")
+ylabel!("integral")
+title!("∫₀⁸ ∛x dx")
+
+# symbolic integration
+using Symbolics
+using SymbolicNumericIntegration
+@variables x
+integrate(cbrt(x))
