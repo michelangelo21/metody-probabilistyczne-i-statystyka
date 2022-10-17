@@ -38,6 +38,5 @@ results = [integrals(n) for n in ns]
 
 scatter(collect(Iterators.flatten(ones(k) * ns')), collect(Iterators.flatten(results)), label="asdf")
 
-dotplot(ns, results, marker=(:blue, stroke(0)), label="")
+dotplot(ns, results, marker=(2, :blue, stroke(0)), label="")
 scatter!(ns, mean.(results), marker=(:red, stroke(0)), label="mean")
-
