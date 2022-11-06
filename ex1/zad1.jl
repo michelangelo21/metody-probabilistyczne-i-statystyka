@@ -65,6 +65,7 @@ for (i, (foo, a, b, true_integral, title)) in enumerate(zip(foos, as, bs, true_i
     savefig("./ex1/results/z1_$i.png")
 end
 
+# std
 integrals(n) = [approximate_integral(foo4, -1, 1, n, 4) for _ in 1:50]
 results = [integrals(n) for n in 50:50:5000]
 plot(50:50:5000, std.(results))

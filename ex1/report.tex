@@ -17,6 +17,11 @@
 \maketitle
 
 \section{Szacowanie wartości całek}
+Całki szacowano za pomocą metody Monte Carlo za pomocą wzoru:
+\begin{equation}
+    \int_{a}^{b} f(x) dx \approx \frac{C}{n} (b-a) M
+\end{equation}
+gdzie $C$ to liczba punktów, które zalazły się w obszarze pod krzywą, $n$ to liczba losowanych punktów, $M$ to wartośc większa niż maksimum funkcji $f(x)$ w przedziale $[a,b]$.
 
 \begin{figure}[!h]
     \centering
@@ -49,7 +54,19 @@
 \section{Wnioski}
 Jak widać na powyższych wykresach im więcej $n$ punktów wylosowano, tym dokładniejsze wyniki uzyskano. Czyli gdy $n\rightarrow \infty$, to wartość całki aproksymowanej dąży do wartości dokładnej, a odchylenie standardowe niezależnych powtórzeń algorytmu dąży do 0.
 
-Eksperyment wykonano w języku Julia 1.7.2.
+Warto też zwrócić uwagę, że średnie po niezależnych powtórzeniach algorytmu są generalnie bardziej zbliżone do wartości dokładnej całki, niż pojedyncze wyniki, a wynika to z tego, że w przypadku pojedynczego wyniku losowanych jest tylko $n$ punktów, a średnia z $k$ powtórzeń algorytmu to wynik z $kn$ (czyli $50 n$ punktów w tym przypadku). Wynika to bezpośrednio ze wzoru:
+\begin{equation}
+    \begin{split}
+        I_{mean} &= \frac{1}{k} \sum_{i=1}^k I_i \\
+        &= \frac{1}{k}\sum_{i=1}^k \frac{C_i}{n} (b-a) M \\
+        &= \frac{1}{kn} (b-a) M \sum_{i=1}^k C_i \\
+        &= \frac{C_{mean}}{kn} (b-a) M
+    \end{split}
+\end{equation}
+
+Jeśli chodzi więc o wynik końcowy to nie ma znaczenia czy wykonamy średnią z $k$ powtórzeń po $n$ punktów, czy po prostu wylosujemy $kn$ punktów i policzymy wartość całki, to dostaniemy wynik z taką samą dokładnością. Jednak w pierwszym przypadku możemy dostać informację o rozrzucie wyników, a w drugim nie.
+
+Eksperyment wykonano w języku Julia 1.7.2, jako generator liczb losowych wykorzystano Xoshiro256++ - domyślnego generatora języka Julia.
 Wartości dokładne całek zostały obliczone za pomocą programu WolframAlpha.
 
 \end{document}
