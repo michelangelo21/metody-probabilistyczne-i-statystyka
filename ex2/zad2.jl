@@ -90,31 +90,31 @@ scatter(n, (d - c) ./ (n .* log.(n)), xlabel="n", label=:none, title=L"\frac{d(n
 scatter(n, (d - c) ./ (n .* log.(log.(n))), xlabel="n", label=:none, title=L"\frac{d(n) - c(n)}{n\ln{\ln{n}}}")
 
 
-colflat(x) = collect(flatten(x))
+collflat(x) = collect(flatten(x))
 
-scatter(colflat([r.n for r in results]), colflat([r.B for r in results]), xlabel="n", label="single probe", title="Bₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter(collflat([r.n for r in results]), collflat([r.B for r in results]), xlabel="n", label="single probe", title="Bₙ", marker=(1, stroke(0)), legend=:topleft)
 scatter!(n, b, label="mean±std", yerror=std([r.B for r in results], dims=2), markerstrokecolor=:auto)
 plot!(n, mean(b ./ sqrt.(n)) * sqrt.(n), label="const * √n", linestyle=:dash, linewidth=2)
 
-scatter(colflat([r.n for r in results]), colflat([r.U for r in results]), xlabel="n", label="single probe", title="Uₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter(collflat([r.n for r in results]), collflat([r.U for r in results]), xlabel="n", label="single probe", title="Uₙ", marker=(1, stroke(0)), legend=:topleft)
 scatter!(n, u, label="mean±std", yerror=std([r.U for r in results], dims=2), markerstrokecolor=:auto)
 plot!(n, mean(u ./ n) * n, label="const * n", linestyle=:dash, linewidth=2)
 
 # TODO L coś dziwnie wygląda
-scatter(colflat([r.n for r in results]), colflat([r.L for r in results]), xlabel="n", label="single probe", title="Lₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter(collflat([r.n for r in results]), collflat([r.L for r in results]), xlabel="n", label="single probe", title="Lₙ", marker=(1, stroke(0)), legend=:topleft)
 scatter!(n, l, label="mean±std", yerror=std([r.L for r in results], dims=2), markerstrokecolor=:auto)
 # plot!(n, mean(l ./ log.(n)) * log.(n), label="const * log(n)", linestyle=:dash, linewidth=2)
 
 # TODO C coś dziwnie wygląda
-scatter(colflat([r.n for r in results]), colflat([r.C for r in results]), xlabel="n", label="single probe", title="Cₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter(collflat([r.n for r in results]), collflat([r.C for r in results]), xlabel="n", label="single probe", title="Cₙ", marker=(1, stroke(0)), legend=:topleft)
 scatter!(n, c, label="mean±std", yerror=std([r.C for r in results], dims=2), markerstrokecolor=:auto)
 # plot!(n, mean(c ./ (n .* log.(n))) * n .* log.(n), label="const * n log(n)", linestyle=:dash, linewidth=2)
 
 # TODO D coś dziwnie wygląda
-scatter(colflat([r.n for r in results]), colflat([r.D for r in results]), xlabel="n", label="single probe", title="Dₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter(collflat([r.n for r in results]), collflat([r.D for r in results]), xlabel="n", label="single probe", title="Dₙ", marker=(1, stroke(0)), legend=:topleft)
 scatter!(n, d, label="mean±std", yerror=std([r.D for r in results], dims=2), markerstrokecolor=:auto)
 # plot!(n, mean(d ./ (n .* log.(n))) * n .* log.(n), label="const * n log(n)", linestyle=:dash, linewidth=2)
 
-scatter(colflat([r.n for r in results]), colflat([r.D - r.C for r in results]), xlabel="n", label="single probe", title="Dₙ - Cₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter(collflat([r.n for r in results]), collflat([r.D - r.C for r in results]), xlabel="n", label="single probe", title="Dₙ - Cₙ", marker=(1, stroke(0)), legend=:topleft)
 scatter!(n, d .- c, label="mean±std", yerror=std([r.D - r.C for r in results], dims=2), markerstrokecolor=:auto)
 plot!(n, mean((d .- c) ./ (n .* log.(log.(n)))) * n .* log.(log.(n)), label="const * n ln(ln(n))", linestyle=:dash, linewidth=2)
