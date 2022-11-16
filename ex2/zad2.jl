@@ -7,6 +7,7 @@ using Distributions
 using Plots
 using StatsPlots
 using LaTeXStrings
+using JLD2, FileIO
 import Random
 Random.Xoshiro(42) # seed
 
@@ -51,5 +52,38 @@ function balls_and_bins(n)
     return BallsnBinsStats(n, Bₙ, Uₙ, Lₙ, Cₙ, Dₙ)
 end
 
-@profview balls_and_bins(100_000)
-@benchmark balls_and_bins(100_000)
+# @profview balls_and_bins(100_000)
+# @benchmark balls_and_bins(100_000)
+n = 1000:1000:100_000
+k = 50
+results = [balls_and_bins(i) for i in n, _ in 1:k]
+
+# save("ex2/results/results.jld2", "results", results)
+# results = load("ex2/results/results.jld2", "results")
+
+b = mean([r.B for r in results], dims=2)
+u = mean([r.U for r in results], dims=2)
+l = mean([r.L for r in results], dims=2)
+c = mean([r.C for r in results], dims=2)
+d = mean([r.D for r in results], dims=2)
+
+scatter(n, b ./ n, xlabel="n", label=:none, title=L"\frac{b(n)}{n}")
+scatter(n, b ./ sqrt.(n), xlabel="n", title=L"\frac{b(n)}{\sqrt{n}}", label=:none, label=:none)
+
+scatter(n, u ./ n, xlabel="n", label=:none, title=L"\frac{u(n)}{n}")
+
+scatter(n, l ./ log.(n), xlabel="n", label=:none, title=L"\frac{l(n)}{\ln{n}}")
+scatter(n, l ./ (log.(n) ./ log.(log.(n))), label=:none, title=L"\frac{l(n)}{(\ln n)/\ln{\ln{n}}}")
+scatter(n, l ./ log.(log.(n)), label=:none, title=L"\frac{l(n)}{\ln{\ln{n}}}")
+
+scatter(n, c ./ n, xlabel="n", label=:none, title=L"\frac{c(n)}{n}")
+scatter(n, c ./ (n .* log.(n)), xlabel="n", label=:none, title=L"\frac{c(n)}{n\ln{n}}")
+scatter(n, c ./ n .^ 2, xlabel="n", label=:none, title=L"\frac{c(n)}{n^2}")
+
+scatter(n, d ./ n, xlabel="n", label=:none, title=L"\frac{d(n)}{n}")
+scatter(n, d ./ (n .* log.(n)), xlabel="n", label=:none, title=L"\frac{d(n)}{n\ln{n}}")
+scatter(n, d ./ n .^ 2, xlabel="n", label=:none, title=L"\frac{d(n)}{n^2}")
+
+scatter(n, (d - c) ./ n, xlabel="n", label=:none, title=L"\frac{d(n) - c(n)}{n}")
+scatter(n, (d - c) ./ (n .* log.(n)), xlabel="n", label=:none, title=L"\frac{d(n) - c(n)}{n\ln{n}}")
+scatter(n, (d - c) ./ (n .* log.(log.(n))), xlabel="n", label=:none, title=L"\frac{d(n) - c(n)}{n\ln{\ln{n}}}")
