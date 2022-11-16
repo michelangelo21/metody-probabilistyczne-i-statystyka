@@ -9,6 +9,7 @@ using StatsPlots
 using LaTeXStrings
 using JLD2, FileIO
 import Random
+import Base.Iterators: flatten
 Random.Xoshiro(42) # seed
 
 struct BallsnBinsStats
@@ -68,7 +69,7 @@ c = mean([r.C for r in results], dims=2)
 d = mean([r.D for r in results], dims=2)
 
 scatter(n, b ./ n, xlabel="n", label=:none, title=L"\frac{b(n)}{n}")
-scatter(n, b ./ sqrt.(n), xlabel="n", title=L"\frac{b(n)}{\sqrt{n}}", label=:none, label=:none)
+scatter(n, b ./ sqrt.(n), xlabel="n", label=:none, title=L"\frac{b(n)}{\sqrt{n}}")
 
 scatter(n, u ./ n, xlabel="n", label=:none, title=L"\frac{u(n)}{n}")
 
@@ -87,3 +88,33 @@ scatter(n, d ./ n .^ 2, xlabel="n", label=:none, title=L"\frac{d(n)}{n^2}")
 scatter(n, (d - c) ./ n, xlabel="n", label=:none, title=L"\frac{d(n) - c(n)}{n}")
 scatter(n, (d - c) ./ (n .* log.(n)), xlabel="n", label=:none, title=L"\frac{d(n) - c(n)}{n\ln{n}}")
 scatter(n, (d - c) ./ (n .* log.(log.(n))), xlabel="n", label=:none, title=L"\frac{d(n) - c(n)}{n\ln{\ln{n}}}")
+
+
+colflat(x) = collect(flatten(x))
+
+scatter(colflat([r.n for r in results]), colflat([r.B for r in results]), xlabel="n", label="single probe", title="Bₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter!(n, b, label="mean±std", yerror=std([r.B for r in results], dims=2), markerstrokecolor=:auto)
+plot!(n, mean(b ./ sqrt.(n)) * sqrt.(n), label="const * √n", linestyle=:dash, linewidth=2)
+
+scatter(colflat([r.n for r in results]), colflat([r.U for r in results]), xlabel="n", label="single probe", title="Uₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter!(n, u, label="mean±std", yerror=std([r.U for r in results], dims=2), markerstrokecolor=:auto)
+plot!(n, mean(u ./ n) * n, label="const * n", linestyle=:dash, linewidth=2)
+
+# TODO L coś dziwnie wygląda
+scatter(colflat([r.n for r in results]), colflat([r.L for r in results]), xlabel="n", label="single probe", title="Lₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter!(n, l, label="mean±std", yerror=std([r.L for r in results], dims=2), markerstrokecolor=:auto)
+# plot!(n, mean(l ./ log.(n)) * log.(n), label="const * log(n)", linestyle=:dash, linewidth=2)
+
+# TODO C coś dziwnie wygląda
+scatter(colflat([r.n for r in results]), colflat([r.C for r in results]), xlabel="n", label="single probe", title="Cₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter!(n, c, label="mean±std", yerror=std([r.C for r in results], dims=2), markerstrokecolor=:auto)
+# plot!(n, mean(c ./ (n .* log.(n))) * n .* log.(n), label="const * n log(n)", linestyle=:dash, linewidth=2)
+
+# TODO D coś dziwnie wygląda
+scatter(colflat([r.n for r in results]), colflat([r.D for r in results]), xlabel="n", label="single probe", title="Dₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter!(n, d, label="mean±std", yerror=std([r.D for r in results], dims=2), markerstrokecolor=:auto)
+# plot!(n, mean(d ./ (n .* log.(n))) * n .* log.(n), label="const * n log(n)", linestyle=:dash, linewidth=2)
+
+scatter(colflat([r.n for r in results]), colflat([r.D - r.C for r in results]), xlabel="n", label="single probe", title="Dₙ - Cₙ", marker=(1, stroke(0)), legend=:topleft)
+scatter!(n, d .- c, label="mean±std", yerror=std([r.D - r.C for r in results], dims=2), markerstrokecolor=:auto)
+plot!(n, mean((d .- c) ./ (n .* log.(log.(n)))) * n .* log.(log.(n)), label="const * n ln(ln(n))", linestyle=:dash, linewidth=2)
